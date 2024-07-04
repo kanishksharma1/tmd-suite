@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const  SignupButton = ({ buttonText, disabled, onPress }) => {
     return (
-        <TouchableOpacity onPress={onPress} disabled={disabled}>
+        <TouchableOpacity  onPress={onPress} disabled={disabled}>
         {disabled ? (
           <View style={[styles.button, styles.disabledButton]}>
             <Text style={[styles.buttonText, styles.disabledButtonText]}>

@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, TextInput, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, TextInput, Text, View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Snackbar } from 'react-native-paper';
 import axios from 'axios';
 
-const InputComponent = ({ placeholder, label, keyboardType, secureTextEntry = false, getOTP = false, mobilenumber, onChangeText }) => {
+const InputComponent = ({ placeholder, keyboardType, secureTextEntry = false, getOTP = false, mobilenumber, onChangeText, valid, errorMessage, showValidationError, clearValidationError }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [timer, setTimer] = useState(0);
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [otp, setOtp] = useState('');
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
   const handleGetOTP = () => {
+    if (!mobilenumber || !/^\d{10}$/.test(mobilenumber)) {
+      if (showValidationError) showValidationError();
+      return;
+    } else {
+      if (clearValidationError) clearValidationError();
+    }
+
     if (timer === 0 && mobilenumber) {
       axios.post('http://192.168.0.2/march2021/landing_saas/index.php?route=restapi/signup/sendotp', new URLSearchParams({
         telephone: mobilenumber,
@@ -25,19 +30,12 @@ const InputComponent = ({ placeholder, label, keyboardType, secureTextEntry = fa
         }
       })
       .then(response => {
+        setOtp(response.data); // Assuming response.data contains the OTP
         setTimer(60);
-        const otp = response.data;
-        setSnackbarMessage(`OTP sent successfully! Your OTP is: ${otp}`);
-        setSnackbarVisible(true);
       })
       .catch(error => {
         console.error('Error sending OTP', error);
-        setSnackbarMessage('There was an error sending the OTP. Please try again.');
-        setSnackbarVisible(true);
       });
-    } else if (!mobilenumber) {
-      setSnackbarMessage('Please enter your mobile number first.');
-      setSnackbarVisible(true);
     }
   };
 
@@ -45,9 +43,10 @@ const InputComponent = ({ placeholder, label, keyboardType, secureTextEntry = fa
     let interval;
     if (timer > 0) {
       interval = setInterval(() => {
-        setTimer(timer - 1);
+        setTimer(prevTimer => prevTimer - 1);
       }, 1000);
     } else if (timer === 0) {
+      setOtp('');
       clearInterval(interval);
     }
     return () => clearInterval(interval);
@@ -57,13 +56,21 @@ const InputComponent = ({ placeholder, label, keyboardType, secureTextEntry = fa
     <View style={styles.container}>
       <View style={styles.inputRow}>
         <TextInput
-          style={[styles.input, getOTP && styles.inputWithOTP]}
+          style={[
+            styles.input, 
+            getOTP && styles.inputWithOTP, 
+            valid === false ? styles.inputInvalid : valid === true ? styles.inputValid : null
+          ]}
           placeholder={placeholder}
           placeholderTextColor="#999"
           secureTextEntry={secureTextEntry && !showPassword}
           keyboardType={keyboardType}
           onChangeText={onChangeText}
+          onFocus={clearValidationError} // Hide validation error on focus
         />
+        {valid === true && !secureTextEntry && (
+          <Ionicons name="checkmark-circle-outline" size={20} color="green" style={styles.validIcon} />
+        )}
         {getOTP && (
           <TouchableOpacity onPress={handleGetOTP} disabled={timer > 0} style={styles.otpButton}>
             <Text style={styles.otpText}>
@@ -77,13 +84,8 @@ const InputComponent = ({ placeholder, label, keyboardType, secureTextEntry = fa
           </TouchableOpacity>
         )}
       </View>
-      <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
-        duration={3000}
-      >
-        {snackbarMessage}
-      </Snackbar>
+      {otp && timer > 0 && <Text style={styles.otpDisplay}>OTP: {otp}</Text>}
+      {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
     </View>
   );
 };
@@ -111,6 +113,12 @@ const styles = StyleSheet.create({
   inputWithOTP: {
     paddingRight: 80,
   },
+  inputInvalid: {
+    borderColor: 'red',
+  },
+  inputValid: {
+    borderColor: 'green',
+  },
   otpButton: {
     position: 'absolute',
     right: 10,
@@ -128,6 +136,22 @@ const styles = StyleSheet.create({
     right: 10,
     top: 15,
   },
+  otpDisplay: {
+    color: 'green',
+    fontSize: 14,
+    marginTop: 5,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 5,
+    fontFamily: 'Roboto-Regular',
+  },
+  validIcon: {
+    position: 'absolute',
+    right: 10,
+    top: 15,
+  }
 });
 
 export default InputComponent;
