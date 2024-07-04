@@ -3,9 +3,9 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const  SignupButton = ({ buttonText, disabled }) => {
+const  SignupButton = ({ buttonText, disabled, onPress }) => {
     return (
-        <TouchableOpacity disabled={disabled}>
+        <TouchableOpacity  onPress={onPress} disabled={disabled}>
         {disabled ? (
           <View style={[styles.button, styles.disabledButton]}>
             <Text style={[styles.buttonText, styles.disabledButtonText]}>
@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontWeight: '400',
-        fontSize: 17,
+        fontSize: 14,
+        fontFamily: 'Roboto-Regular'
     },
     disabledButton: {
         backgroundColor: '#3ea8f3', // Lighter color for disabled state
