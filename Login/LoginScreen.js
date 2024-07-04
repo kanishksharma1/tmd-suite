@@ -100,7 +100,7 @@ export default function LoginScreen({ navigation }) {
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <ImageComponent
-        imageUrl={require('/home/tmd-pc/react-native-demo/react-native/react-native-firstApp/assets/Login/Group 1.png')}
+        imageUrl={require('../assets/Login/Group 1.png')}
         isLocal={true}
         style={styles.imageContainer}
         imageStyle={styles.image}

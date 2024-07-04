@@ -28,7 +28,6 @@ export default function SignupScreen({ navigation }) {
     otp: '',
     password: '',
   });
-  const [showValidationError, setShowValidationError] = useState(false);
 
   const validateInputs = () => {
     let valid = true;
@@ -85,7 +84,6 @@ export default function SignupScreen({ navigation }) {
   };
 
   const handleSignup = () => {
-    setShowValidationError(false); // Clear any existing validation errors
     if (!validateInputs()) {
       return;
     }
@@ -118,14 +116,6 @@ export default function SignupScreen({ navigation }) {
       });
   };
 
-  const showValidationErrorForMobile = () => {
-    setShowValidationError(true);
-  };
-
-  const clearValidationErrorForMobile = () => {
-    setShowValidationError(false);
-  };
-
   const openTermsAndConditions = () => {
     const url = 'https://192.168.0.2/march2021/landing_saas/index.php?route=information/information/agree&information_id=3';
     Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
@@ -133,31 +123,8 @@ export default function SignupScreen({ navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
-<<<<<<< HEAD
-      <View style={styles.imageDiv}>
-        <Image
-          source={require('C:/Users/LENOVO/tmd-suite/assets/6963-ai.png')}
-          style={styles.image}
-          resizeMode="cover"
-        />
-      </View>
-      <View style={styles.container}>
-        <View style={styles.innerContainer}>
-          <Text style={styles.title}>Create Your Account</Text>
-          <InputComponent placeholder="Name" label="Enter Full Name" />
-          <InputComponent placeholder="Store Name" />
-          <InputComponent placeholder="Mobile Number"  getOTP keyboardType="numeric" />
-          <InputComponent placeholder="Enter OTP"  keyboardType="phone-pad" />
-          <InputComponent placeholder="Password" secureTextEntry />
-          <View style={styles.checkboxContainer}>
-            <Ionicons 
-              name={checked ? "checkbox" : "square-outline"} 
-              size={24} 
-              color={checked ? "#0066b0" : "#00adef"} 
-              onPress={() => setChecked(!checked)}
-=======
       <ImageComponent 
-        imageUrl={require('/home/tmd-pc/react-native-demo/react-native/react-native-firstApp/assets/6963-ai.png')} 
+        imageUrl={require('../assets/6963-ai.png')} 
         isLocal={true} 
         style={{  
           width: '100%', 
@@ -193,10 +160,7 @@ export default function SignupScreen({ navigation }) {
             onChangeText={setMobilenumber} 
             valid={validInputs.mobilenumber} 
             errorMessage={errorMessages.mobilenumber} 
-            showValidationError={showValidationErrorForMobile} 
-            clearValidationError={clearValidationErrorForMobile}
           />
-          {showValidationError && <Text style={styles.errorText}>Please enter a valid 10-digit mobile number.</Text>}
           <InputComponent 
             placeholder="Enter OTP" 
             keyboardType="phone-pad" 
@@ -216,19 +180,14 @@ export default function SignupScreen({ navigation }) {
               name="checkbox" 
               size={24} 
               color="#0066b0" 
->>>>>>> d3b679a716de7470168b255e669604feb49d11ab
             />
             <Text style={styles.checkboxLabel}>
               I agree to the tmd Suite{' '}
               <Text onPress={openTermsAndConditions} style={styles.linkText}>terms & conditions</Text> 
             </Text>
           </View>
-<<<<<<< HEAD
-          <SignupButton buttonText="Sign Up" disabled={!checked} />
-=======
           <SignupButton buttonText="Sign Up" disabled={loading} onPress={handleSignup} />
           {loading && <ActivityIndicator size="large" color="#0066b0" />}
->>>>>>> d3b679a716de7470168b255e669604feb49d11ab
         </View>
       </View>
     </ScrollView>
@@ -252,13 +211,8 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     width: '100%',
-<<<<<<< HEAD
-    paddingLeft: 20,
-    paddingRight: 20,
-=======
     paddingLeft: 7,
     paddingRight: 7,
->>>>>>> d3b679a716de7470168b255e669604feb49d11ab
     paddingBottom: 20,
     backgroundColor: '#ffffff',
     borderTopLeftRadius: 20,
@@ -269,59 +223,32 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
-<<<<<<< HEAD
-    paddingTop:15,
-    paddingBottom: 30,
-=======
     paddingTop: 15,
     paddingBottom: 30,
     fontFamily: 'Roboto-Regular'
->>>>>>> d3b679a716de7470168b255e669604feb49d11ab
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 25,
     paddingTop: 10,
-<<<<<<< HEAD
-=======
     fontFamily: 'Roboto-Regular'
->>>>>>> d3b679a716de7470168b255e669604feb49d11ab
   },
   checkboxLabel: {
     color: 'grey',
     lineHeight: 25,
     paddingLeft: 10,
-<<<<<<< HEAD
-
-=======
     fontSize: 12,
     fontFamily: 'Roboto-Regular'
->>>>>>> d3b679a716de7470168b255e669604feb49d11ab
   },
   linkText: {
     color: '#0066b0',
     fontWeight: '600',
   },
-<<<<<<< HEAD
-  imageDiv: {
-    width: '100%',
-    height: 250,
-    backgroundColor: '#0066b0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    top:19
-  },
-  image: {
-    width: '85%',
-    height: '70%',
-=======
   errorText: {
     color: 'red',
     fontSize: 12,
     marginTop: 5,
     fontFamily: 'Roboto-Regular',
->>>>>>> d3b679a716de7470168b255e669604feb49d11ab
   },
 });
